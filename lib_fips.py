@@ -1,4 +1,6 @@
-import csv
+#!/usr/bin/env python2.7
+
+"""Helper library for US state and county fips codes."""
 
 FIPSToState = {
     "01": {
