@@ -27,14 +27,17 @@ def get_fips_state_abbr(value, default=None):
   return default
 
 
-fieldnames = ["date", "state", "fips", "positive", "negative", "pending", "total", "totalTestResults", "negativeIncrease", "positiveIncrease", "totalTestResultsIncrease"]
+fieldnames = [
+    "date", "state", "fips", "positive", "negative", "pending",
+    "total", "totalTestResults", "negativeIncrease", "positiveIncrease",
+    "totalTestResultsIncrease"]
 
 
 def get_san_francisco_county():
   path = "raw/CA/06075/rows.csv?accessType=DOWNLOAD"
   fips = "06075"
   with open(path) as f:
-    rows = sorted(csv.DictReader(f))
+    rows = sorted(csv.DictReader(f), key=lambda row: row["result_date"])
     """
     items = {}
     for row in rows:
@@ -46,6 +49,7 @@ def get_san_francisco_county():
     negative = 0
     total = 0
     totalTestResults = 0
+    prev_date = 0
     for row in rows:
       negativeIncrease = int(row["neg"] or "0")
       negative += negativeIncrease
@@ -58,6 +62,8 @@ def get_san_francisco_county():
       total += totalTestResultsIncrease + pending
       output_row = {}
       output_row["date"] = int(row["result_date"].replace("/", ""))
+      assert prev_date < output_row["date"]
+      prev_date = output_row["date"]
       output_row["state"] = "CA"
       output_row["fips"] = fips
       output_row["positive"] = positive
