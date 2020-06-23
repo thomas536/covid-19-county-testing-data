@@ -37,11 +37,12 @@ def get_san_francisco_county():
   path = "raw/CA/06075/rows.csv?accessType=DOWNLOAD"
   fips = "06075"
   with open(path) as f:
-    rows = sorted(csv.DictReader(f), key=lambda row: row["result_date"])
+    rows = sorted(
+        csv.DictReader(f), key=lambda row: row["specimen_collection_date"])
     """
     items = {}
     for row in rows:
-      dt = datetime.strptime(row["result_date"], '%Y/%m/%d').date()
+      dt = datetime.strptime(row["specimen_collection_date"], '%Y/%m/%d').date()
       items[dt] = row
     """
 
@@ -61,7 +62,7 @@ def get_san_francisco_county():
       totalTestResults += totalTestResultsIncrease
       total += totalTestResultsIncrease + pending
       output_row = {}
-      output_row["date"] = int(row["result_date"].replace("/", ""))
+      output_row["date"] = int(row["specimen_collection_date"].replace("/", ""))
       assert prev_date < output_row["date"]
       prev_date = output_row["date"]
       output_row["state"] = "CA"
